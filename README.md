@@ -5,4 +5,4 @@ website using Markdown and git.
 
 This is a minimal tutorial to get started.
 
-View the thing [here](https://kbroman.org/simple_site).
+Check the entire site [here](https://dgrabar.github.io/).
