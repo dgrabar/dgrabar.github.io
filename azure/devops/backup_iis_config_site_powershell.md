@@ -37,7 +37,18 @@ First, we create temp variable where backup files will be outputted:
 Here, we are using Powershell 'get-date' function and we will format date to format acceptable for folder name on Windows drive. 
 
 
-Then we have 
+Then we are creating IIS config backup using native 'appcmd' app with dynamically named subfolder inside '.\inetsrv' folder. 
+
+    Invoke-Expression "& $env:windir\system32\inetsrv\appcmd.exe add backup ""$folder-IIS"""
+
+
+Afterwards, we copy backup folder to the destination backup folder using 'xcopy' command:
+
+    xcopy "C:\Windows\System32\inetsrv\backup\$folder-IIS\*" "d:\Deployment\$folder\IIS-config" /i /s /y
+
+The crucial step is the usage of existing'msdeploy' app which is used for various deplyoments scenarios, in this case backing up the whole site:
+
+    Invoke-Expression "& 'C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe' --% -verb:sync -source:iisapp=""Yourwebsite/YourWebservice"" -dest:package=D:\Deployment\$folder\site.zip"
 
 
 ### Checking the output of Powershell task result
