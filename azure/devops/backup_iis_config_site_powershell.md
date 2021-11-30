@@ -1,60 +1,62 @@
 ---
 layout: page
-title: Azure DevOps Mobile App Tasks for Android
+title: Backup IIS config and website before deployment
 description: .
 ---
 
-To test your site locally, you'll need
+# Backup IIS config and website before deployment using Powershell
 
-- [ruby](https://www.ruby-lang.org/en/)
-- the [github-pages](https://github.com/github/pages-gem) gem
-
-### Installing ruby
-
-There are
-[lots of different ways to install ruby](https://www.ruby-lang.org/en/installation/).
+In order to backup your local IIS config files and backing up whole site, you can use Powershell script to perform this operation as part of your manual or streamlined DevOps release/deployment phase.
 
 
-In Mac OS X, older versions of ruby will already be installed.  But I
-use the [Ruby Version Manager (RVM)](https://rvm.io/) to have a more
-recent version.  You could also use [Homebrew](https://brew.sh/).
 
-In Windows, use [RubyInstaller](https://rubyinstaller.org/). (In most
-of this tutorial, I've assumed you're using a Mac or some flavor of
-Unix. It's possible that none of this was usable for Windows
-folks. Sorry!)
+## Creating Powershell job as part of your release pipeline
+
+With Azure DevOps you can create Powershell task to be run as part of your release pipeline as shown:
+
+![Azure Powershell task](images/azure_iis_job.png)
 
 
-### Installing the github-pages gem
+## Powershell script
 
-Run the following command:
+Run the following script as part of Powershell script job:
 
-    gem install github-pages
+    $folder=powershell get-date -format "{dd-MMM-yyyy__HH_mm}"
 
-This will install the `github-pages` gem and all dependencies
-(including [jekyll](https://jekyllrb.com/)).
+    Invoke-Expression "& $env:windir\system32\inetsrv\appcmd.exe add backup ""$folder-IIS"""
 
-Later, to update the gem, type:
+    xcopy "C:\Windows\System32\inetsrv\backup\$folder-IIS\*" "d:\Deployment\$folder\IIS-config" /i /s /y
 
-    gem update github-pages
+    Invoke-Expression "& 'C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe' --% -verb:sync -source:iisapp=""Yourwebsite/YourWebservice"" -dest:package=D:\Deployment\$folder\site.zip"
+    
+
+Ok, what do we have here:
+
+First, we create temp variable where backup files will be outputted:
+
+    $folder=powershell get-date -format "{dd-MMM-yyyy__HH_mm}"
+
+Here, we are using Powershell `get-date` function and we will format date to format acceptable for folder name on Windows drive. 
 
 
-### Testing your site locally
+Then we are creating IIS config backup using native `appcmd` app with dynamically named subfolder inside `..\inetsrv` folder. 
 
-To construct and test your site locally, go into the directory and
-type
+    Invoke-Expression "& $env:windir\system32\inetsrv\appcmd.exe add backup ""$folder-IIS"""
 
-    jekyll build
+Note the way we are getting local `Windows` path by using Powershell supported PATH: `$env:windir`.
 
-This will create (or modify) a `_site/` directory, containing
-everything from `assets/`, and then the `index.md` and all
-`pages/*.md` files, converted to html. (So there'll be
-`_site/index.html` and the various `_site/pages/*.html`.)
+Afterwards, we copy backup folder to the destination backup folder using `xcopy` command:
 
-Type the following in order to &ldquo;serve&rdquo; the site.
-This will first run `build`, and so it does _not_ need to be
-preceded by `jekyll build`.
+    xcopy "C:\Windows\System32\inetsrv\backup\$folder-IIS\*" "d:\Deployment\$folder\IIS-config" /i /s /y
 
-    jekyll serve
+The crucial step is the usage of existing `msdeploy` app which is used for various deplyoments scenarios, in this case backing up the whole site:
 
-Now open your browser and go to <http://localhost:4000>
+    Invoke-Expression "& 'C:\Program Files (x86)\IIS\Microsoft Web Deploy V3\msdeploy.exe' --% -verb:sync -source:iisapp=""Yourwebsite/YourWebservice"" -dest:package=D:\Deployment\$folder\site.zip"
+
+If you don't have `msdeploy` app installed, you can download it from [here](https://www.iis.net/downloads/microsoft/web-deploy).
+
+## Checking the output of Powershell task result
+
+Once this job finishes, following should be seen inside destination backup folder:
+
+![Output of Powershell task](images/backup_task_output.png)
