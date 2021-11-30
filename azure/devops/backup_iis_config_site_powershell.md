@@ -1,25 +1,25 @@
 
 ---
 layout: page
-title: Backup IIS config and website before deployment using Powershell2
+title: Backup IIS config and website before deployment using PowerShell
 description: desc
 ---
 
 
-In order to backup your local IIS config files and backing up whole site, you can use Powershell script to perform this operation as part of your manual or streamlined DevOps release/deployment phase.
+In order to backup your local IIS config files and backing up whole site, you can use PowerShell script to perform this operation as part of your manual or streamlined DevOps release/deployment phase.
 
 
 
-## Creating Powershell job as part of your release pipeline
+## Creating PowerShell job as part of your release pipeline
 
-With Azure DevOps you can create Powershell task to be run as part of your release pipeline as shown:
+With Azure DevOps you can create PowerShell task to be run as part of your release pipeline as shown:
 
-![Azure Powershell task](images/azure_iis_job.png)
+![Azure PowerShell task](images/azure_iis_job.png)
 
 
-## Powershell script
+## PowerShell script
 
-Run the following script as part of Powershell script job:
+Run the following script as part of PowerShell script job:
 
     $folder=powershell get-date -format "{dd-MMM-yyyy__HH_mm}"
 
@@ -43,7 +43,7 @@ Then we are creating IIS config backup using native `appcmd` app with dynamicall
 
     Invoke-Expression "& $env:windir\system32\inetsrv\appcmd.exe add backup ""$folder-IIS"""
 
-Note the way we are getting local `Windows` path by using Powershell supported PATH: `$env:windir`.
+Note the way we are getting local `Windows` path by using PowerShell supported PATH: `$env:windir`.
 
 Afterwards, we copy backup folder to the destination backup folder using `xcopy` command:
 
@@ -55,8 +55,8 @@ The crucial step is the usage of existing `msdeploy` app which is used for vario
 
 If you don't have `msdeploy` app installed, you can download it from [here](https://www.iis.net/downloads/microsoft/web-deploy).
 
-## Checking the output of Powershell task result
+## Checking the output of PowerShell task result
 
 Once this job finishes, following should be seen inside destination backup folder:
 
-![Output of Powershell task](images/backup_task_output.png)
+![Output of PowerShell task](images/backup_task_output.png)
