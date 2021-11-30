@@ -1,8 +1,16 @@
-## Simple site: Easy websites with GitHub pages
+---
+layout: page
+title: Danijel's blog
+tagline: Adventures with Azure DevOps
+description: desc
+---
 
-[Github Pages](https://pages.github.com) provide a simple way to make a
-website using Markdown and git.
 
-This is a minimal tutorial to get started.
+- [Azure DevOps Mobile App Tasks for Android](azure/devops/mobile_app_task_android.html)
+- [Backup IIS config and website before deployment using Powershell](azure/devops/backup_iis_config_site_powershell.html)
 
-Check the entire site [here](https://dgrabar.github.io/).
+
+---
+
+
+Please check all of my [GitHub work](https://github.com/dgrabar).
