@@ -1,5 +1,9 @@
+---
+layout: page
+title: Android Mobile App Tasks for Azure DevOps (VSTS)
+description: desc
+---
 
-# Android Mobile App Tasks for Azure DevOps (VSTS)
 
 ## Install
 
