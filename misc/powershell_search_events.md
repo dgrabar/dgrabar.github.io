@@ -5,7 +5,7 @@ description: desc
 ---
 
 
-Sometimes you need to quickly serach for Windows Events by some text. Since there may be thousands and thousands of Events dispatched, here's the
+Sometimes you need to quickly search for Windows Events by some text. Since there may be thousands and thousands of Events dispatched, here's the
 quick lookup Powershell script to achieve this goal:
 
 
