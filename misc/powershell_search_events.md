@@ -24,6 +24,6 @@ First, we get 'Application' type of events and transform it to xml data type sty
 Next, we are use using 'like' operator and surround it with *TEXT* for inline search:
     $xml.event.eventdata.data -like '*TEXT_TO_SEARCH*' } | select -first 2000
 
-At the end we are restrictign Console output to first 2000 records
+At the end we are restricting Console output to the first 2000 records
     select -first 2000
 
